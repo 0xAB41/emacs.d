@@ -2,12 +2,14 @@
 #+AUTHOR: Abhilash Meesala
 #+PROPERTY: header-args :tangle yes
 #+STARTUP: indent
-#+OPTIONS: toc:4
 #+OPTIONS: toc:nil
 
-* About
-** Installation
-*** Emacs & Dependencies
+* emacs.d
+#+TOC: headlines 4
+
+** About
+*** Installation
+**** Emacs & Dependencies
 On Mac OS, first install required dependencies.
 #+BEGIN_SRC sh :tangle=no
   brew install ripgrep coreutils fd
@@ -22,7 +24,7 @@ Install [[https://github.com/railwaycat/homebrew-emacsmacport][railwaycat's emac
   ln -s /usr/local/opt/emacs-mac/Emacs.app /Applications/Emacs.app
 #+END_SRC
 
-** Naming Conventions
+*** Naming Conventions
 Loosely based on bbatsov's [[https://github.com/bbatsov/emacs-lisp-style-guide][The Emacs Lisp Style Guide]] and doom emacs's [[https://github.com/hlissner/doom-emacs/blob/5b3f52f5fb98cc3af653b043d809254cebe04e6a/docs/contributing.org#naming-conventions][Naming conventions]]
    
 |-------------------+----------------|
@@ -36,13 +38,13 @@ Loosely based on bbatsov's [[https://github.com/bbatsov/emacs-lisp-style-guide][
 | advice            | ab-[-]{name}-a |
 |-------------------+----------------|
 
-* Meta
+** Meta
 Enable lexical scoping
 #+BEGIN_SRC emacs-lisp
   ;;; -*- lexical-binding: t -*-
 #+END_SRC
 
-** Variables
+*** Variables
 User details
 #+BEGIN_SRC emacs-lisp
   (setq user-full-name "Abhilash Meesala"
@@ -62,8 +64,8 @@ Predicates to determine running context.
 #+END_SRC
 
 
-* Package Management
-** Setup package sources
+** Package Management
+*** Setup package sources
 #+BEGIN_SRC emacs-lisp
   (require 'package)
 
@@ -83,7 +85,7 @@ Predicates to determine running context.
     (setq package-enable-at-startup nil)          ; To prevent initializing twice
     (package-initialize))
 #+END_SRC
-** use-package
+*** use-package
 #+BEGIN_SRC emacs-lisp
   ;; Setup `use-package'
   (unless (package-installed-p 'use-package)
@@ -106,7 +108,9 @@ Predicates to determine running context.
   (use-package gnu-elpa-keyring-update)
 #+END_SRC
 
-* Better Defaults
+*** TODO straight.el
+
+** Better Defaults
 UTF-8 everywhere
 #+BEGIN_SRC emacs-lisp
   ;; utf-8 everywhere
@@ -134,7 +138,6 @@ When we visit a previously visited file, place point at last location.
   (save-place-mode 1)
 #+END_SRC
 
-
 #+BEGIN_SRC emacs-lisp
   ;; Don't write lock-files, I'm the only one here
   (setq create-lockfiles nil)
@@ -144,7 +147,31 @@ When we visit a previously visited file, place point at last location.
 
   ;; always highlight current line
   (global-hl-line-mode t)
+#+END_SRC
 
+Move custom preferences to another file.
+#+Begin_SRC emacs-lisp
+  (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+#+END_SRC
+
+** UI
+*** Fonts
+#+Begin_SRC emacs-lisp
+(set-frame-font "Fantasque Sans Mono-17" nil t)
+(setq-default line-spacing 0.24)
+#+END_SRC
+
+*** Frame
+Display file paths in frame titles
+#+Begin_SRC emacs-lisp
+(setq frame-title-format
+       '((:eval (if (buffer-file-name)
+                    (abbreviate-file-name (buffer-file-name))
+		  "%b")))
+       icon-title-format frame-title-format)
+#+END_SRC
+
+#+Begin_SRC emacs-lisp
   ;; Make titlebar on Mac look better 
   (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
   (add-to-list 'default-frame-alist '(ns-appearance . light))
@@ -157,27 +184,8 @@ When we visit a previously visited file, place point at last location.
                 bidi-paragraph-direction 'left-to-right)
 #+END_SRC
 
-Display file paths in frame titles
-#+Begin_SRC emacs-lisp
-(setq frame-title-format
-       '((:eval (if (buffer-file-name)
-                    (abbreviate-file-name (buffer-file-name))
-		  "%b")))
-       icon-title-format frame-title-format)
-#+END_SRC
-
-Move custom preferences to another file.
-#+Begin_SRC emacs-lisp
-  (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
-#+END_SRC
-
-#+Begin_SRC emacs-lisp
-(set-frame-font "Fantasque Sans Mono-17" nil t)
-(setq-default line-spacing 0.24)
-#+END_SRC
-
-* Editing
-** Evil mode
+** Editing
+*** Evil mode
 #+BEGIN_SRC emacs-lisp
   (use-package evil
     :init
@@ -214,3 +222,22 @@ Move custom preferences to another file.
   (setq initial-buffer-choice
         "~/.emacs.d/config.org")
 #+END_SRC
+
+*** TODO Brackets
+*** TODO line highlights and pulse
+** Languages
+*** TODO Company
+*** TODO flycheck
+*** TODO LSP
+*** TODO Web
+*** TODO JS/TS
+*** TODO React
+*** TODO Vue.js
+*** TODO Go
+*** TODO Java
+*** TODO Clojure
+*** TODO Scala
+*** TODO Zig
+** Other
+*** TODO Org
+*** TODO Zen
