@@ -1,48 +1,90 @@
 #+TITLE: emacs.d
 #+AUTHOR: Abhilash Meesala
 #+PROPERTY: header-args :tangle yes
+#+STARTUP: indent
+#+OPTIONS: toc:4
+#+OPTIONS: toc:nil
 
 * About
+** Installation
+*** Emacs & Dependencies
+On Mac OS, first install required dependencies.
+#+BEGIN_SRC sh :tangle=no
+  brew install ripgrep coreutils fd
+  # Installs clang
+  xcode-select --install
+#+END_SRC
+
+Install [[https://github.com/railwaycat/homebrew-emacsmacport][railwaycat's emacs]]
+#+BEGIN_SRC sh :tangle=no
+  brew tap railwaycat/emacsmacport
+  brew install emacs-mac --with-modules --with-emacs-big-sur-icon
+  ln -s /usr/local/opt/emacs-mac/Emacs.app /Applications/Emacs.app
+#+END_SRC
 
 ** Naming Conventions
-   Loosely based on bbatsov's [[https://github.com/bbatsov/emacs-lisp-style-guide][The Emacs Lisp Style Guide]] and doom emacs's [[https://github.com/hlissner/doom-emacs/blob/5b3f52f5fb98cc3af653b043d809254cebe04e6a/docs/contributing.org#naming-conventions][Naming conventions]]
+Loosely based on bbatsov's [[https://github.com/bbatsov/emacs-lisp-style-guide][The Emacs Lisp Style Guide]] and doom emacs's [[https://github.com/hlissner/doom-emacs/blob/5b3f52f5fb98cc3af653b043d809254cebe04e6a/docs/contributing.org#naming-conventions][Naming conventions]]
    
-   |-------------------+------------------|
-   | Type              | Convention       |
-   |-------------------+------------------|
-   | Regular Public fn | ab-{name}        |
-   | Interactive fn    | ab/{name}        |
-   | Internal fn       | ab--{name}       |
-   | hooks             | ab-[-]{name}-h   |
-   | predicates        | ab-[-]{name}-p   |
-   | advice            | ab-[-]{name}-a   |
-   |-------------------+------------------|
+|-------------------+----------------|
+| Type              | Convention     |
+|-------------------+----------------|
+| Regular Public fn | ab-{name}      |
+| Interactive fn    | ab/{name}      |
+| Internal fn       | ab--{name}     |
+| hooks             | ab-[-]{name}-h |
+| predicates        | ab-[-]{name}-p |
+| advice            | ab-[-]{name}-a |
+|-------------------+----------------|
 
 * Meta
-  Enable lexical scoping
-  #+BEGIN_SRC emacs-lisp
+Enable lexical scoping
+#+BEGIN_SRC emacs-lisp
   ;;; -*- lexical-binding: t -*-
-  #+END_SRC
+#+END_SRC
+
+** Variables
+User details
+#+BEGIN_SRC emacs-lisp
+  (setq user-full-name "Abhilash Meesala"
+        user-mail-address "mail@abhilashm.me")
+#+END_SRC
+
+Predicates to determine running context.
+#+BEGIN_SRC emacs-lisp
+  (defvar is-mac (eq system-type 'darwin)
+    "Is this environment a mac?")
+
+  (defvar is-gui (display-graphic-p)
+    "Is emacs running in gui mode?")
+
+  (defvar is-term (not is-gui)
+    "Is emacs running in a terminal?")
+#+END_SRC
+
 
 * Package Management
-  #+BEGIN_SRC emacs-lisp
+** Setup package sources
+#+BEGIN_SRC emacs-lisp
   (require 'package)
 
-  (setq package-user-dir
-        (expand-file-name (format "elpa-%s.%s" emacs-major-version emacs-minor-version)
-                          user-emacs-directory))
-  
+(let ((versioned-package-dir
+       (expand-file-name (format "elpa-%s.%s" emacs-major-version emacs-minor-version)
+                         user-emacs-directory)))
+  (setq package-user-dir versioned-package-dir))
+
   ;; gnupg does not honor the `package-user-dir` 
   (when (boundp 'package-gnupghome-dir)
     (setq package-gnupghome-dir
-           (expand-file-name "gnupg" package-user-dir)))
-  
+          (expand-file-name "gnupg" package-user-dir)))
+
   (add-to-list 'package-archives '( "melpa" . "https://melpa.org/packages/") t)
 
   (unless (bound-and-true-p package--initialized) ; To avoid warnings in 27
-  (setq package-enable-at-startup nil)          ; To prevent initializing twice
-  (package-initialize))
-
+    (setq package-enable-at-startup nil)          ; To prevent initializing twice
+    (package-initialize))
+#+END_SRC
+** use-package
+#+BEGIN_SRC emacs-lisp
   ;; Setup `use-package'
   (unless (package-installed-p 'use-package)
     (package-refresh-contents)
@@ -51,7 +93,6 @@
   ;; Should set before loading `use-package'
   (eval-and-compile
     (setq use-package-always-ensure t)
-    (setq use-package-always-defer t)
     (setq use-package-expand-minimally t)
     (setq use-package-enable-imenu-support t))
 
@@ -63,26 +104,41 @@
 
   ;; Update GPG keyring for GNU ELPA
   (use-package gnu-elpa-keyring-update)
-  #+END_SRC
+#+END_SRC
 
 * Better Defaults
-  #+BEGIN_SRC emacs-lisp
-  ;; Don't write lock-files, I'm the only one here
-  (setq create-lockfiles nil)
+UTF-8 everywhere
+#+BEGIN_SRC emacs-lisp
+  ;; utf-8 everywhere
+  (when (fboundp 'set-charset-priority)
+    (set-charset-priority 'unicode))
+  (prefer-coding-system 'utf-8)
+  (setq locale-coding-system 'utf-8)
+  (set-language-environment 'utf-8)
+  (set-default-coding-systems 'utf-8)
+#+END_SRC
 
-  (setq save-place-file (expand-file-name ".places" user-emacs-directory))
-  ;; REVIEW: Do we still need this?
-  ;; (setq save-place-forget-unreadable-files nil)
-  (save-place-mode 1)
-
-  ;; No noise on startup 
+Reduce noise on start up
+#+BEGIN_SRC emacs-lisp
   (setq inhibit-startup-message t
         inhibit-startup-echo-area-message user-login-name
         inhibit-default-init t
         initial-major-mode 'fundamental-mode
-        initial-scratch-message nil
-        inhibit-splash-screen t)
-  
+        initial-scratch-message nil)
+#+END_SRC
+
+When we visit a previously visited file, place point at last location.
+#+BEGIN_SRC emacs-lisp
+  (setq save-place-file (expand-file-name ".places" user-emacs-directory))
+  (setq save-place-forget-unreadable-files nil)
+  (save-place-mode 1)
+#+END_SRC
+
+
+#+BEGIN_SRC emacs-lisp
+  ;; Don't write lock-files, I'm the only one here
+  (setq create-lockfiles nil)
+
   ;; y/n instead of yes/no 
   (defalias 'yes-or-no-p 'y-or-n-p)
 
@@ -91,42 +147,70 @@
 
   ;; Make titlebar on Mac look better 
   (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
-  (add-to-list 'default-frame-alist '(ns-appearance . dark))
+  (add-to-list 'default-frame-alist '(ns-appearance . light))
   ;; beautiful fonts on Mac
   (setq mac-allow-anti-aliasing t)
+  (setq ns-use-thin-smoothing t)
 
-  ;; utf-8 everywhere
-  (when (fboundp 'set-charset-priority)
-    (set-charset-priority 'unicode))
-  (prefer-coding-system 'utf-8)
-  (setq locale-coding-system 'utf-8)
-  (set-language-environment 'utf-8)
-  (set-default-coding-systems 'utf-8)
-  
   ;; no need for bidirectional rendering
   (setq-default bidi-display-reordering 'left-to-right
                 bidi-paragraph-direction 'left-to-right)
-  #+END_SRC
-   
+#+END_SRC
+
+Display file paths in frame titles
+#+Begin_SRC emacs-lisp
+(setq frame-title-format
+       '((:eval (if (buffer-file-name)
+                    (abbreviate-file-name (buffer-file-name))
+		  "%b")))
+       icon-title-format frame-title-format)
+#+END_SRC
+
+Move custom preferences to another file.
+#+Begin_SRC emacs-lisp
+  (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+#+END_SRC
+
+#+Begin_SRC emacs-lisp
+(set-frame-font "Fantasque Sans Mono-17" nil t)
+(setq-default line-spacing 0.24)
+#+END_SRC
+
 * Editing
 ** Evil mode
-   #+BEGIN_SRC emacs-lisp
-   (use-package evil
-     :ensure t
-     :init
-     (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
-     (setq evil-want-keybinding nil)
-     :config
-     (evil-mode 1))
+#+BEGIN_SRC emacs-lisp
+  (use-package evil
+    :init
+    (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
+    (setq evil-want-keybinding nil)
+    :config
+    (evil-mode 1))
 
-   (use-package evil-collection
-     :after evil
-     :ensure t
-     :config
-     (evil-collection-init))
-   #+END_SRC
+  (use-package evil-collection
+    :after evil
+    :config
+    (evil-collection-init))
+#+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(setq user-full-name "Abhilash Meesala"
-      user-mail-address "mail@abhilashm.me")
+
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  (setq mac-option-modifier 'meta
+        mac-command-modifier 'super)
+  (global-set-key [(super a)] #'mark-whole-buffer)
+  (global-set-key [(super v)] #'yank)
+  (global-set-key [(super c)] #'kill-ring-save)
+  (global-set-key [(super s)] #'save-buffer)
+  (global-set-key [(super l)] #'goto-line)
+  (global-set-key [(super w)] #'delete-frame)
+  (global-set-key [(super z)] #'undo)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  ;; Open init.el always
+  ;; FIXME: Change this once the config is in a decent shape
+  (setq initial-buffer-choice
+        "~/.emacs.d/config.org")
 #+END_SRC
