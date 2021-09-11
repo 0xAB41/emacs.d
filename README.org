@@ -1,4 +1,130 @@
 #+TITLE: emacs.d
+#+AUTHOR: Abhilash Meesala
+#+PROPERTY: header-args :tangle yes
+
+* About
+
+** Naming Conventions
+   Loosely based on bbatsov's [[https://github.com/bbatsov/emacs-lisp-style-guide][The Emacs Lisp Style Guide]] and doom emacs's [[https://github.com/hlissner/doom-emacs/blob/5b3f52f5fb98cc3af653b043d809254cebe04e6a/docs/contributing.org#naming-conventions][Naming conventions]]
+   
+   |-------------------+------------------|
+   | Type              | Convention       |
+   |-------------------+------------------|
+   | Regular Public fn | ab-{name}        |
+   | Interactive fn    | ab/{name}        |
+   | Internal fn       | ab--{name}       |
+   | hooks             | ab-[-]{name}-h   |
+   | predicates        | ab-[-]{name}-p   |
+   | advice            | ab-[-]{name}-a   |
+   |-------------------+------------------|
+
+* Meta
+  Enable lexical scoping
+  #+BEGIN_SRC emacs-lisp
+  ;;; -*- lexical-binding: t -*-
+  #+END_SRC
+
+* Package Management
+  #+BEGIN_SRC emacs-lisp
+  (require 'package)
+
+  (setq package-user-dir
+        (expand-file-name (format "elpa-%s.%s" emacs-major-version emacs-minor-version)
+                          user-emacs-directory))
+  
+  ;; gnupg does not honor the `package-user-dir` 
+  (when (boundp 'package-gnupghome-dir)
+    (setq package-gnupghome-dir
+           (expand-file-name "gnupg" package-user-dir)))
+  
+  (add-to-list 'package-archives '( "melpa" . "https://melpa.org/packages/") t)
+
+  (unless (bound-and-true-p package--initialized) ; To avoid warnings in 27
+  (setq package-enable-at-startup nil)          ; To prevent initializing twice
+  (package-initialize))
+
+  ;; Setup `use-package'
+  (unless (package-installed-p 'use-package)
+    (package-refresh-contents)
+    (package-install 'use-package))
+
+  ;; Should set before loading `use-package'
+  (eval-and-compile
+    (setq use-package-always-ensure t)
+    (setq use-package-always-defer t)
+    (setq use-package-expand-minimally t)
+    (setq use-package-enable-imenu-support t))
+
+  (require 'use-package)
+
+  ;; Required by `use-package'
+  (use-package diminish)
+  (use-package bind-key)
+
+  ;; Update GPG keyring for GNU ELPA
+  (use-package gnu-elpa-keyring-update)
+  #+END_SRC
+
+* Better Defaults
+  #+BEGIN_SRC emacs-lisp
+  ;; Don't write lock-files, I'm the only one here
+  (setq create-lockfiles nil)
+
+  (setq save-place-file (expand-file-name ".places" user-emacs-directory))
+  ;; REVIEW: Do we still need this?
+  ;; (setq save-place-forget-unreadable-files nil)
+  (save-place-mode 1)
+
+  ;; No noise on startup 
+  (setq inhibit-startup-message t
+        inhibit-startup-echo-area-message user-login-name
+        inhibit-default-init t
+        initial-major-mode 'fundamental-mode
+        initial-scratch-message nil
+        inhibit-splash-screen t)
+  
+  ;; y/n instead of yes/no 
+  (defalias 'yes-or-no-p 'y-or-n-p)
+
+  ;; always highlight current line
+  (global-hl-line-mode t)
+
+  ;; Make titlebar on Mac look better 
+  (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
+  (add-to-list 'default-frame-alist '(ns-appearance . dark))
+  ;; beautiful fonts on Mac
+  (setq mac-allow-anti-aliasing t)
+
+  ;; utf-8 everywhere
+  (when (fboundp 'set-charset-priority)
+    (set-charset-priority 'unicode))
+  (prefer-coding-system 'utf-8)
+  (setq locale-coding-system 'utf-8)
+  (set-language-environment 'utf-8)
+  (set-default-coding-systems 'utf-8)
+  
+  ;; no need for bidirectional rendering
+  (setq-default bidi-display-reordering 'left-to-right
+                bidi-paragraph-direction 'left-to-right)
+  #+END_SRC
+   
+* Editing
+** Evil mode
+   #+BEGIN_SRC emacs-lisp
+   (use-package evil
+     :ensure t
+     :init
+     (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
+     (setq evil-want-keybinding nil)
+     :config
+     (evil-mode 1))
+
+   (use-package evil-collection
+     :after evil
+     :ensure t
+     :config
+     (evil-collection-init))
+   #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
 (setq user-full-name "Abhilash Meesala"
