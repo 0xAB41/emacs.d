@@ -1,0 +1,6 @@
+#+TITLE: emacs.d
+
+#+BEGIN_SRC emacs-lisp
+(setq user-full-name "Abhilash Meesala"
+      user-mail-address "mail@abhilashm.me")
+#+END_SRC
