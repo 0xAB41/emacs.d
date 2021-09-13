@@ -3,6 +3,7 @@
 #+PROPERTY: header-args :tangle yes
 #+STARTUP: indent
 #+OPTIONS: toc:nil
+#+EXPORT_FILE_NAME: README.md
 
 * emacs.d
 #+TOC: headlines 4
