@@ -43,6 +43,7 @@
 (setq find-file-visit-truename t
       vc-follow-symlinks t)
 
+(setq savehist-file (expand-file-name ".history" user-emacs-directory))
 (ignore-errors (savehist-mode 1))
 
 (provide 'core)

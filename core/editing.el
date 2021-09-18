@@ -12,6 +12,10 @@
 
 (global-auto-revert-mode 1)
 (delete-selection-mode 1)
+
+(setq show-paren-delay 0.2
+      show-paren-highlight-openparen t
+      show-paren-when-point-inside-paren t)
 (show-paren-mode 1)
 
 ;; Remember where the point is in for every visited file
@@ -21,6 +25,9 @@
 
 ;; always highlight current line
 (global-hl-line-mode t)
+
+;; Show column as well as line number
+(setq column-number-mode t)
 
 ;; Don't write lock-files, I'm the only one here.
 (setq create-lockfiles nil)
@@ -54,16 +61,36 @@
   (evil-mode 1))
 
 (use-package evil-collection
+  :requires evil
   :after evil
   :config
   (evil-collection-init))
 
+(use-package evil-surround
+  :requires evil
+  :after evil
+  :config
+  (global-evil-surround-mode 1))
+
+(use-package evil-goggles
+  :requires evil
+  :config
+  (evil-goggles-mode))
+
+(use-package evil-commentary
+  :requires evil
+  :config
+  (evil-commentary-mode))
 
 ;; Jump using avy
+;; REVIEW: evil-snipe
 (use-package avy
   :custom
   (avy-timeout-seconds 0.2))
 
+(use-package rainbow-delimiters
+  :config
+  (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
 
 (provide 'editing)
 ;;; editing.el ends here

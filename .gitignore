@@ -3,4 +3,8 @@ config.el
 custom.el
 elpa-*/
 .places
-history
+.history
+projectile-bookmarks.eld
+recentf
+smex-items
+transient/
