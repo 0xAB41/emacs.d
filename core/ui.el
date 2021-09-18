@@ -24,15 +24,14 @@
 ;; so to achieve the centered effect, we fiddle with line-height and line-spacing
 ;;(add-text-properties (point-min) (point-max)
 ;;		     '(line-spacing 0.25 line-height 1.25))
-;;(add-to-list 'default-frame-alist '(font . "Fantasque Sans Mono 1.2 18"))
+;; (add-to-list 'default-frame-alist '(font . "Fantasque Sans Mono 1.2 18"))
+;; (face-attribute 'default :font)
+;; REVIEW: https://valignatev.com/posts/emacs-font/
 (set-frame-font "Fantasque Sans Mono 1.2 18")
-(face-attribute 'default :font)
 
 ;; Disable bidirectional rendering
 (setq-default bidi-display-reordering 'left-to-right
               bidi-paragraph-direction 'left-to-right)
-
-
 
 (use-package diminish)
 
@@ -47,19 +46,6 @@
   (load-theme 'doom-nord-light t)
   (doom-themes-org-config))
 
-;; (use-package modus-themes
-;;   :init
-;;   (setq modus-themes-italic-constructs nil
-;;         modus-themes-bold-constructs nil
-;;         modus-themes-region '(bg-only no-extend)
-;; 	modus-themes-subtle-line-numbers t)
-;;   (modus-themes-load-themes)
-;;   :config
-;;   ;; Load the theme of your choice:
-;;   (modus-themes-load-operandi))
-
-
-
 (use-package doom-modeline
   :config
   (setq doom-modeline-buffer-encoding nil
@@ -67,7 +53,6 @@
 	doom-modeline-height 18)
   :init
   (doom-modeline-mode 1))
-
 
 (provide 'ui)
 ;;; ui.el ends here

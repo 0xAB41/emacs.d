@@ -4,16 +4,18 @@
 
 (use-package bind-key)
 
-(setq mac-option-modifier 'meta
+(when is-mac
+  (setq mac-option-modifier 'meta
         mac-command-modifier 'super)
-(global-set-key [(super a)] #'mark-whole-buffer)
-(global-set-key [(super v)] #'yank)
-(global-set-key [(super c)] #'kill-ring-save)
-(global-set-key [(super s)] #'save-buffer)
-(global-set-key [(super l)] #'goto-line)
-(global-set-key [(super w)] #'delete-frame)
-(global-set-key [(super z)] #'undo)
-(global-set-key [(super q)] #'save-buffers-kill-terminal)
+  (global-set-key [(super c)] #'osx-clipboard-copy)
+  (global-set-key [(super v)] #'osx-clipboard-paste)
+  (global-set-key [(super x)] #'osx-clipboard-cut)
+  (global-set-key [(super a)] #'mark-whole-buffer)
+  (global-set-key [(super s)] #'save-buffer)
+  (global-set-key [(super l)] #'goto-line)
+  (global-set-key [(super w)] #'delete-frame)
+  (global-set-key [(super z)] #'undo)
+  (global-set-key [(super q)] #'save-buffers-kill-terminal))
 
 (use-package general
   :config
@@ -31,7 +33,8 @@
 ;; File related keybindings
 (nvmap :states '(normal visual) :keymaps 'override :prefix "SPC"
   "f f" '(find-file :which-key "Find file")
-  "f s" '(save-buffer :which-key "Save file"))
+  "f s" '(save-buffer :which-key "Save file")
+  "f S" '(save-all-buffers :which-key "Save all buffers"))
 
 (use-package which-key
   :init

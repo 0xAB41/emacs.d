@@ -46,5 +46,34 @@
 (setq savehist-file (expand-file-name ".history" user-emacs-directory))
 (ignore-errors (savehist-mode 1))
 
+;; Prevent yank/kill from accessing the clipboard
+(setq select-enable-clipboard nil)
+
+(defun osx-clipboard-copy (start end)
+  "copy region to system clipboard"
+  (interactive "r")
+  (shell-command-on-region start end "pbcopy"))
+
+(defun osx-clipboard-paste ()
+  "paste from system clipboard"
+  (interactive)
+  (insert (shell-command-to-string "pbpaste")))
+
+(defun osx-clipboard-cut (start end)
+  "cut region to system clipboard"
+  (interactive "r")
+  (osx-clipboard-copy start end)
+  (delete-region start end))
+
+(defun save-all-buffers ()
+  "save all opened buffers"
+  (interactive)
+  (save-some-buffers t))
+
+(defun edit-config ()
+  "open emacs config file(init.el)"
+  (interactive)
+  (find-file (expand-file-name "init.el" user-emacs-directory)))
+
 (provide 'core)
 ;;; core.el ends here

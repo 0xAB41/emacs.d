@@ -56,6 +56,15 @@
   :config
   (smex-initialize))
 
+(setq rotate-text-words '(("true" "false")
+                          ("width" "height")
+                          ("yes" "no")
+                          ("y" "n")
+                          ("0" "1")
+                          ("row" "col")
+                          ("more" "less")
+                          ("top" "bottom")
+                          ("left" "right")))
 
 (provide 'completions)
 ;;; completions.el ends here

@@ -18,6 +18,9 @@
       show-paren-when-point-inside-paren t)
 (show-paren-mode 1)
 
+(when (fboundp 'global-so-long-mode)
+  (global-so-long-mode))
+
 ;; Remember where the point is in for every visited file
 (setq save-place-file (expand-file-name ".places" user-emacs-directory))
 (setq save-place-forget-unreadable-files nil)
@@ -25,6 +28,9 @@
 
 ;; always highlight current line
 (global-hl-line-mode t)
+
+;; Show line numbers
+(global-display-line-numbers-mode 1)
 
 ;; Show column as well as line number
 (setq column-number-mode t)
@@ -82,6 +88,8 @@
   :config
   (evil-commentary-mode))
 
+(use-package evil-numbers)
+
 ;; Jump using avy
 ;; REVIEW: evil-snipe
 (use-package avy
@@ -91,6 +99,14 @@
 (use-package rainbow-delimiters
   :config
   (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
+
+(use-package hl-prog-extra
+  :init
+  (add-hook 'prog-mode-hook #'hl-prog-extra-mode))
+
+;; REVIEW: Crux https://github.com/bbatsov/crux
+
+(use-package sudo-edit)
 
 (provide 'editing)
 ;;; editing.el ends here
