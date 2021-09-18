@@ -20,12 +20,18 @@
 (setq x-underline-at-descent-line t)
 
 ;; Set fonts and line spacings
-(set-frame-font "Fantasque Sans Mono-18" nil t)
-(setq line-spacing 0.24)
+;; Unfortunately, I could not find a reliable way to center the text when using line spacing
+;; so to achieve the centered effect, we fiddle with line-height and line-spacing
+;;(add-text-properties (point-min) (point-max)
+;;		     '(line-spacing 0.25 line-height 1.25))
+;;(add-to-list 'default-frame-alist '(font . "Fantasque Sans Mono 1.2 18"))
+(set-frame-font "Fantasque Sans Mono 1.2 18")
+(face-attribute 'default :font)
 
 ;; Disable bidirectional rendering
 (setq-default bidi-display-reordering 'left-to-right
               bidi-paragraph-direction 'left-to-right)
+
 
 
 (use-package diminish)
@@ -39,9 +45,20 @@
   (setq doom-themes-enable-bold t
 	doom-themes-enable-italic t)
   (load-theme 'doom-nord-light t)
-
-
   (doom-themes-org-config))
+
+;; (use-package modus-themes
+;;   :init
+;;   (setq modus-themes-italic-constructs nil
+;;         modus-themes-bold-constructs nil
+;;         modus-themes-region '(bg-only no-extend)
+;; 	modus-themes-subtle-line-numbers t)
+;;   (modus-themes-load-themes)
+;;   :config
+;;   ;; Load the theme of your choice:
+;;   (modus-themes-load-operandi))
+
+
 
 (use-package doom-modeline
   :config
