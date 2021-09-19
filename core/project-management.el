@@ -11,7 +11,8 @@
   :after (ivy)
   :diminish
   :config
-  (setq projectile-completion-system 'ivy)
+  (setq projectile-completion-system 'ivy
+	projectile-enable-caching t) ; Enable caching unconditionally
   (dolist (dir '("node_modules" "build" "target" "out"))
     (add-to-list 'projectile-globally-ignored-directories dir))
   (projectile-mode 1))

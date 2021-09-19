@@ -38,6 +38,16 @@
 
 (use-package all-the-icons)
 
+;;; ------ pretty symbols
+(global-prettify-symbols-mode 1)
+
+(defun maze-add-pretty-symbols ()
+  "Refer https://unicodelookup.com/ Dec codes for symbols"
+  (setq prettify-symbols-alist
+	'(("lambda" . 955))))
+
+(add-hook 'emacs-lisp-mode-hook 'maze-add-pretty-symbols)
+
 ;;; ------ Themes & Mode line
 (add-to-list 'custom-theme-load-path maze-themes-directory)
 
