@@ -46,31 +46,7 @@
 ;; Prevent yank/kill from accessing the clipboard
 (setq select-enable-clipboard nil)
 
-(defun maze/osx-clipboard-copy (start end)
-  "copy region to system clipboard"
-  (interactive "r")
-  (shell-command-on-region start end "pbcopy"))
-
-(defun maze/osx-clipboard-paste ()
-  "paste from system clipboard"
-  (interactive)
-  (insert (shell-command-to-string "pbpaste")))
-
-(defun maze/osx-clipboard-cut (start end)
-  "cut region to system clipboard"
-  (interactive "r")
-  (osx-clipboard-copy start end)
-  (delete-region start end))
-
-(defun maze/save-all-buffers ()
-  "save all opened buffers"
-  (interactive)
-  (save-some-buffers t))
-
-(defun maze/edit-config ()
-  "open emacs config file(init.el)"
-  (interactive)
-  (find-file (expand-file-name "init.el" user-emacs-directory)))
+(require 'functions)
 
 ;; Setup PATH and other vars from shell
 (use-package exec-path-from-shell

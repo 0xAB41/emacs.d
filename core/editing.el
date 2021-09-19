@@ -57,7 +57,7 @@
       delete-old-versions t
       kept-new-versions 10	; Number of newest versions to keep when a new numbered backup is made.
       kept-old-versions 0	; Number of oldest versions to keep when a new numbered backup is made.
-      setq version-control t)	; Make numeric backup versions unconditionally.
+      version-control t)	; Make numeric backup versions unconditionally.
 
 ;; Write all autosave files in the tmp dir
 (setq auto-save-file-name-transforms
@@ -100,7 +100,10 @@
 ;; REVIEW: evil-snipe
 (use-package avy
   :custom
-  (avy-timeout-seconds 0.2))
+  ;; Make avy assign shorter key sequences to things (lines/chars) near the point
+  (setq avy-orders-alist
+	'((avy-goto-line . avy-order-closest)))
+  (setq avy-timeout-seconds 0.2))
 
 (use-package hl-prog-extra
   :init
@@ -109,6 +112,12 @@
 ;; REVIEW: Crux https://github.com/bbatsov/crux
 
 (use-package sudo-edit)
+
+(use-package undo-tree
+  :init
+  (setq undo-tree-visualizer-diff t
+	undo-tree-visualizer-timestamps t)
+  (global-undo-tree-mode))
 
 (provide 'editing)
 ;;; editing.el ends here

@@ -6,6 +6,16 @@
 
 (use-package winner
   :config
+  (setq winner-boring-buffers
+	'("*Completions*"
+	  "*Compile-Log*"
+	  "*inferior-lisp*"
+	  "*Fuzzy Completions*"
+	  "*Apropos*"
+	  "*Help*"
+	  "*cvs*"
+	  "*Buffer List*"
+	  "*Ibuffer*"))
   (winner-mode 1))
 
 (use-package dashboard)

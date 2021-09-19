@@ -2,6 +2,7 @@
 ;;; Commentary:
 ;;; Code:
 
+;;; ------ Configure package manager
 (require 'package)
 
 ;; Save all packages under a directory versioned based on major, minor emacs version
@@ -22,6 +23,7 @@
   (setq package-enable-at-startup nil) 
   (package-initialize))
 
+;;; ------ use-package
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
@@ -34,6 +36,8 @@
 (require 'use-package)
 
 (use-package gnu-elpa-keyring-update)
+
+;; TODO: straight.el
 
 (provide 'package-management)
 ;;; package-management.el ends here

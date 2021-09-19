@@ -2,7 +2,10 @@
 ;;; Commentary:
 ;;; Code:
 
-(use-package find-file-in-project)
+(use-package find-file-in-project
+  :init
+  (when (executable-find "fd")
+    (setq ffip-use-rust-fd t)))
 
 (use-package projectile
   :after (ivy)
@@ -15,7 +18,10 @@
 
 ;; projectile-rg requires rg to be present
 (use-package rg)
-;; REVIEW: Snails https://github.com/manateelazycat/snails
+
+;; TODO: Snails https://github.com/manateelazycat/snails
+
+;; TODO: Dired
 
 (use-package treemacs
   :config

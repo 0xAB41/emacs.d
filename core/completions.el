@@ -5,12 +5,11 @@
 (use-package ivy
   :defer 0.1
   :diminish
-  :custom
+  :config
   (setq ivy-count-format "[%d/%d] "
 	ivy-use-virtual-buffers t
 	enable-recursive-minibuffers t
 	ivy-initial-inputs-alist nil)
-  :config
   (ivy-mode 1))
 
 (use-package ivy-rich
@@ -33,6 +32,7 @@
   (counsel-mode 1))
 
 ;; Remember our last M-x command
+;; REVIEW: amx. smex is dead?
 (use-package smex
   :config
   (setq smex-save-file (expand-file-name "smex-items" maze-etc-directory))
