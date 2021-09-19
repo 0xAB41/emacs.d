@@ -2,13 +2,7 @@
 ;;; Commentary:
 ;;; Code:
 
-(setq user-full-name "Abhilash Meesala"
-      user-mail-address "mail@abhilashm.me")
-
-(defvar is-mac (eq system-type 'darwin)
-  "Is this environment a mac?")
-
-;; ------ Better Defaults
+;;; ------ Better Defaults
 ;; Don't ring bells
 (setq ring-bell-function 'ignore)
 
@@ -20,15 +14,18 @@
       initial-scratch-message nil)
 
 ;; Move custom preferences to another file
-(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+(setq custom-file (expand-file-name "custom.el" maze-etc-directory))
 (when (file-exists-p custom-file)
   (load custom-file :noerror))
 
 ;; y/n instead of yes/no 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
-(setq uniquify-buffer-name-style 'post-forward-angle-brackets) ; Show path if names are same
-(setq delete-by-moving-to-trash t)         ; Deleting files go to OS's trash folder
+;; Show path names in buffer if the names are same
+(setq uniquify-buffer-name-style 'post-forward-angle-brackets)
+
+;; Deleting files go to OS's trash folder
+(setq delete-by-moving-to-trash t)
 
 ;; Fix frame titles to display file paths
 (setq frame-title-format
@@ -37,43 +34,49 @@
 		  "%b")))
        icon-title-format frame-title-format)
 
-(setq initial-buffer-choice
-      "~/.emacs.d/init.el")
+(setq initial-buffer-choice "~/.emacs.d/init.el")
 
 (setq find-file-visit-truename t
       vc-follow-symlinks t)
 
-(setq savehist-file (expand-file-name ".history" user-emacs-directory))
+;; Save minibuffer history
+(setq savehist-file (expand-file-name ".history" maze-etc-directory))
 (ignore-errors (savehist-mode 1))
 
 ;; Prevent yank/kill from accessing the clipboard
 (setq select-enable-clipboard nil)
 
-(defun osx-clipboard-copy (start end)
+(defun maze/osx-clipboard-copy (start end)
   "copy region to system clipboard"
   (interactive "r")
   (shell-command-on-region start end "pbcopy"))
 
-(defun osx-clipboard-paste ()
+(defun maze/osx-clipboard-paste ()
   "paste from system clipboard"
   (interactive)
   (insert (shell-command-to-string "pbpaste")))
 
-(defun osx-clipboard-cut (start end)
+(defun maze/osx-clipboard-cut (start end)
   "cut region to system clipboard"
   (interactive "r")
   (osx-clipboard-copy start end)
   (delete-region start end))
 
-(defun save-all-buffers ()
+(defun maze/save-all-buffers ()
   "save all opened buffers"
   (interactive)
   (save-some-buffers t))
 
-(defun edit-config ()
+(defun maze/edit-config ()
   "open emacs config file(init.el)"
   (interactive)
   (find-file (expand-file-name "init.el" user-emacs-directory)))
+
+;; Setup PATH and other vars from shell
+(use-package exec-path-from-shell
+  :if maze-is-mac
+  :config
+  (exec-path-from-shell-initialize))
 
 (provide 'core)
 ;;; core.el ends here

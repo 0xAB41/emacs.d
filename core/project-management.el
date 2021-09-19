@@ -9,9 +9,9 @@
   :diminish
   :config
   (setq projectile-completion-system 'ivy)
+  (dolist (dir '("node_modules" "build" "target" "out"))
+    (add-to-list 'projectile-globally-ignored-directories dir))
   (projectile-mode 1))
-
-(add-to-list 'projectile-globally-ignored-directories "node_modules")
 
 ;; projectile-rg requires rg to be present
 (use-package rg)

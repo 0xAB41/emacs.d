@@ -6,13 +6,14 @@
 (dolist (mode '(tool-bar-mode menu-bar-mode scroll-bar-mode tooltip-mode))
   (when (fboundp mode) (funcall mode -1)))
 
+;; Dialog's are distractive, get rid of them.
 (setq use-file-dialog nil)
 (setq use-dialog-box nil)
 
-(when is-mac
+(when maze-is-mac
   ;; Make title bars pretty on Mac
   (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
-  (add-to-list 'default-frame-alist '(ns-appearance . light))
+  (add-to-list 'default-frame-alist '(ns-appearance . dark))
   ;; beautiful fonts on Mac
   (setq mac-allow-anti-aliasing t))
 
@@ -37,7 +38,9 @@
 
 (use-package all-the-icons)
 
-(add-to-list 'custom-theme-load-path (expand-file-name "themes" user-emacs-directory))
+;;; ------ Themes & Mode line
+(add-to-list 'custom-theme-load-path maze-themes-directory)
+
 (use-package doom-themes
   :requires all-the-icons
   :config

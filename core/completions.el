@@ -8,7 +8,8 @@
   :custom
   (setq ivy-count-format "[%d/%d] "
 	ivy-use-virtual-buffers t
-	enable-recursive-minibuffers t)
+	enable-recursive-minibuffers t
+	ivy-initial-inputs-alist nil)
   :config
   (ivy-mode 1))
 
@@ -31,30 +32,18 @@
   :config
   (counsel-mode 1))
 
+;; Remember our last M-x command
+(use-package smex
+  :config
+  (setq smex-save-file (expand-file-name "smex-items" maze-etc-directory))
+  (smex-initialize))
+
+;;; ------ Snippets
 (use-package yasnippet
   :init
   (setq yas-snippet-dirs '("~/.emacs.d/snippets"))
   :config
   (yas-global-mode 1))
-
-(use-package company
-  :diminish company-mode
-  :hook
-  (after-init . global-company-mode))
-
-(use-package lsp-mode)
-(use-package lsp-ui
-  :requires lsp-mode)
-(use-package lsp-ivy
-  :requires ivy)
-
-;; No ^ in things like counsel-M-x
-(setq ivy-initial-inputs-alist nil)
-
-;; Remember our last M-x command
-(use-package smex
-  :config
-  (smex-initialize))
 
 (setq rotate-text-words '(("true" "false")
                           ("width" "height")
@@ -65,6 +54,20 @@
                           ("more" "less")
                           ("top" "bottom")
                           ("left" "right")))
+
+;;; ------ Auto complete and LSP
+(use-package company
+  :diminish company-mode
+  :hook
+  (after-init . global-company-mode))
+
+(use-package lsp-mode)
+
+(use-package lsp-ui
+  :requires lsp-mode)
+
+(use-package lsp-ivy
+  :requires ivy)
 
 (provide 'completions)
 ;;; completions.el ends here

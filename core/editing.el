@@ -11,19 +11,15 @@
 (set-default-coding-systems 'utf-8)
 
 (global-auto-revert-mode 1)
-(delete-selection-mode 1)
 
-(setq show-paren-delay 0.2
-      show-paren-highlight-openparen t
-      show-paren-when-point-inside-paren t)
-(show-paren-mode 1)
+(delete-selection-mode 1)
 
 (when (fboundp 'global-so-long-mode)
   (global-so-long-mode))
 
 ;; Remember where the point is in for every visited file
-(setq save-place-file (expand-file-name ".places" user-emacs-directory))
-(setq save-place-forget-unreadable-files nil)
+(setq save-place-file (expand-file-name ".places" maze-etc-directory)
+      save-place-forget-unreadable-files nil)
 (save-place-mode 1)
 
 ;; always highlight current line
@@ -32,32 +28,42 @@
 ;; Show line numbers
 (global-display-line-numbers-mode 1)
 
-;; Show column as well as line number
+;; Show column as well as line number in modeline
 (setq column-number-mode t)
 
-;; Don't write lock-files, I'm the only one here.
-(setq create-lockfiles nil)
+;;; ------ Brackets and delimiters
+(use-package rainbow-delimiters
+  :config
+  (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
+
+(setq show-paren-delay 0.2
+      show-paren-highlight-openparen t
+      show-paren-when-point-inside-paren t)
+(show-paren-mode 1)
 
 (setq electric-pair-inhibit-predicate 'electric-pair-conservative-inhibit)
 (electric-pair-mode 1)
 
+;;; ------ Backups and lock files
+;; Don't write lock-files, I'm the only one here.
+(setq create-lockfiles nil)
+
 ;; disk is cheap. Backup ! alot.
 (setq backup-directory-alist
       `(("." . ,(expand-file-name
-                 (concat user-emacs-directory "backups")))))
-(setq backup-by-copying t)
-(setq vc-make-backup-files nil) ; Make backups for files under version control as well.
-(setq delete-old-versions t)
-(setq kept-new-versions 10) ; Number of newest versions to keep when a new numbered backup is made.
-(setq kept-old-versions 0) ; Number of oldest versions to keep when a new numbered backup is made.
-(setq version-control t) ; Make numeric backup versions unconditionally.
-
+                 (concat maze-etc-directory "backups")))))
+(setq backup-by-copying t
+      vc-make-backup-files nil	; Make backups for files under version control as well.
+      delete-old-versions t
+      kept-new-versions 10	; Number of newest versions to keep when a new numbered backup is made.
+      kept-old-versions 0	; Number of oldest versions to keep when a new numbered backup is made.
+      setq version-control t)	; Make numeric backup versions unconditionally.
 
 ;; Write all autosave files in the tmp dir
 (setq auto-save-file-name-transforms
       `((".*" ,temporary-file-directory t)))
 
-
+;;; ------ Evil
 ;; Modal editing everywhere!
 (use-package evil
   :init
@@ -95,10 +101,6 @@
 (use-package avy
   :custom
   (avy-timeout-seconds 0.2))
-
-(use-package rainbow-delimiters
-  :config
-  (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
 
 (use-package hl-prog-extra
   :init

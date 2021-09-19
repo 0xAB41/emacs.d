@@ -7,7 +7,7 @@
 ;; Save all packages under a directory versioned based on major, minor emacs version
 (let ((versioned-package-dir
        (expand-file-name (format "elpa-%s.%s" emacs-major-version emacs-minor-version)
-			 user-emacs-directory)))
+			 maze-etc-directory)))
   (setq package-user-dir versioned-package-dir))
 
 ;; gnupg does not honor the `package-user-dir` 
@@ -15,10 +15,11 @@
   (setq package-gnupghome-dir
         (expand-file-name "gnupg" package-user-dir)))
 
-(add-to-list 'package-archives '( "melpa" . "https://melpa.org/packages/") t)
+(add-to-list 'package-archives
+	     '( "melpa" . "https://melpa.org/packages/") t)
 
-(unless (bound-and-true-p package--initialized) ; To avoid warnings in 27
-  (setq package-enable-at-startup nil)          ; To prevent initializing twice
+(unless (bound-and-true-p package--initialized)
+  (setq package-enable-at-startup nil) 
   (package-initialize))
 
 (unless (package-installed-p 'use-package)
@@ -26,7 +27,7 @@
   (package-install 'use-package))
 
 (eval-and-compile
-  (setq use-package-always-ensure t)		; Always ensure
+  (setq use-package-always-ensure t)
   (setq use-package-expand-minimally t)
   (setq use-package-enable-imenu-support t))
 

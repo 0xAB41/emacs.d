@@ -10,4 +10,5 @@
 
 (use-package dashboard)
 
+(provide 'win)
 ;;; win.el ends here
