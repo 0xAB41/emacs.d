@@ -2,6 +2,9 @@
 ;;; Commentary:
 ;;; Code:
 
+;; Quit prompts using esc
+(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+
 (use-package bind-key)
 
 (use-package discover-my-major)
@@ -25,6 +28,7 @@
   (global-set-key [(super f)] #'swiper))
 
 (use-package general
+  :after evil
   :config
   (general-evil-setup t))
 

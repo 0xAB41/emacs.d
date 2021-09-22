@@ -27,6 +27,9 @@
 
 ;; Show line numbers
 (global-display-line-numbers-mode 1)
+;; Disable line numbers for some modes
+(dolist (mode '(org-mode-hook))
+  (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
 ;; Show column as well as line number in modeline
 (setq column-number-mode t)
@@ -50,8 +53,7 @@
 
 ;; disk is cheap. Backup ! alot.
 (setq backup-directory-alist
-      `(("." . ,(expand-file-name
-                 (concat maze-etc-directory "backups")))))
+      `(("." . ,(expand-file-name "backups" maze-etc-directory))))
 (setq backup-by-copying t
       vc-make-backup-files nil	; Make backups for files under version control as well.
       delete-old-versions t
@@ -67,8 +69,10 @@
 ;; Modal editing everywhere!
 (use-package evil
   :init
-  (setq evil-want-integration t)
-  (setq evil-want-keybinding nil)
+  (setq evil-want-integration t
+	evil-want-keybinding nil
+	evil-want-C-u-scroll t
+	evil-want-C-i-jump nil)
   :config
   (evil-mode 1))
 

@@ -5,6 +5,13 @@
 (use-package ivy
   :defer 0.1
   :diminish
+  :bind (("C-s" . swiper)
+	 :map ivy-minibuffer-map
+	 ("TAB" . ivy-alt-done)
+	 ("C-j" . ivy-next-line)
+	 ("C-k" . ivy-previous-line)
+	 :map ivy-switch-buffer-map
+	 ("C-d" . ivy-switch-buffer-kill))
   :config
   (setq ivy-count-format "[%d/%d] "
 	ivy-use-virtual-buffers t
@@ -28,8 +35,18 @@
 
 (use-package counsel
   :after ivy
+  :bind (:map minibuffer-local-map
+	 ("C-r" . 'counsel-minibuffer-history))
   :config
   (counsel-mode 1))
+
+(use-package ivy-prescient
+  :after counsel
+  :custom
+  (ivy-prescient-enable-filtering nil)
+  :config
+  (prescient-persist-mode 1)
+  (ivy-prescient-mode 1))
 
 ;; Remember our last M-x command
 ;; REVIEW: amx. smex is dead?
@@ -61,7 +78,9 @@
   :hook
   (after-init . global-company-mode))
 
-(use-package lsp-mode)
+(use-package lsp-mode
+  :init
+  (setq lsp-keymap-prefix "C-c l"))
 
 (use-package lsp-ui
   :requires lsp-mode)

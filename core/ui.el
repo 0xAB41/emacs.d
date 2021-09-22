@@ -44,7 +44,8 @@
 (defun maze-add-pretty-symbols ()
   "Refer https://unicodelookup.com/ Dec codes for symbols"
   (setq prettify-symbols-alist
-	'(("lambda" . 955))))
+	'(("lambda" . 955)
+	  ("defun" . 402))))
 
 (add-hook 'emacs-lisp-mode-hook 'maze-add-pretty-symbols)
 
@@ -63,9 +64,11 @@
   :config
   (setq doom-modeline-buffer-encoding nil
 	doom-modeline-env-version nil
-	doom-modeline-height 18)
+	doom-modeline-height 16)
   :init
   (doom-modeline-mode 1))
+
+(set-fringe-mode 4)
 
 (provide 'ui)
 ;;; ui.el ends here

@@ -16,8 +16,9 @@
   (setq package-gnupghome-dir
         (expand-file-name "gnupg" package-user-dir)))
 
-(add-to-list 'package-archives
-	     '( "melpa" . "https://melpa.org/packages/") t)
+(setq package-archives '(("melpa" . "https://melpa.org/packages/")
+                         ("org" . "https://orgmode.org/elpa/")
+                         ("elpa" . "https://elpa.gnu.org/packages/")))
 
 (unless (bound-and-true-p package--initialized)
   (setq package-enable-at-startup nil) 
@@ -38,6 +39,17 @@
 (use-package gnu-elpa-keyring-update)
 
 ;; TODO: straight.el
+
+
+;;; ------ auto updates
+(use-package auto-package-update
+  :custom
+  (auto-package-update-interval 45)
+  (auto-package-update-prompt-before-update t)
+  (auto-package-update-hide-results t)
+  :config
+  (auto-package-update-maybe)
+  (auto-package-update-at-time "09:00"))
 
 (provide 'package-management)
 ;;; package-management.el ends here
